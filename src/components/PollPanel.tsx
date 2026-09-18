@@ -1,36 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import type { ContractStatus, HistoryEntry } from '../hooks/useMidnight';
 import type { PollState } from '../lib/poll-api';
 import { CopyButton } from './CopyButton';
 import { VerifyOnChain } from './VerifyOnChain';
+import { CircuitCall, TxStateBadge } from './CircuitCall';
 import { useInView } from '../hooks/useInView';
 import { generateSecureCredential, MIN_CREDENTIAL_LENGTH } from '../lib/witnesses';
 import { explorerTxUrl } from '../lib/format';
 
 const POLL_QUESTION = 'Should ShadowPoll ship its New Moon milestone?';
-
-/** Ticks up while `active` is true — real feedback on how long local proof
- * generation + submission actually took, not a spinner that could be
- * hiding anything from 200ms to 30s. */
-function useElapsedSeconds(active: boolean): number {
-  const [elapsed, setElapsed] = useState(0);
-  const startRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (!active) {
-      startRef.current = null;
-      setElapsed(0);
-      return;
-    }
-    startRef.current = performance.now();
-    const id = setInterval(() => {
-      if (startRef.current !== null) setElapsed((performance.now() - startRef.current) / 1000);
-    }, 100);
-    return () => clearInterval(id);
-  }, [active]);
-
-  return elapsed;
-}
 
 function downloadHistory(history: HistoryEntry[]) {
   const serializable = history.map((h) => ({
@@ -68,13 +46,6 @@ function shareUrlFor(contractAddress: string): string {
   const url = new URL(window.location.href);
   url.search = `?contract=${contractAddress}`;
   return url.toString();
-}
-
-function TxStateBadge({ isCalling, hasResult, hasError }: { isCalling: boolean; hasResult: boolean; hasError: boolean }) {
-  if (hasError) return <span className="tx-state tx-state-error">ERROR</span>;
-  if (isCalling) return <span className="tx-state tx-state-proving">PROVING</span>;
-  if (hasResult) return <span className="tx-state tx-state-confirmed">CONFIRMED</span>;
-  return <span className="tx-state tx-state-ready">READY</span>;
 }
 
 function HistoryList({ history, networkId }: { history: HistoryEntry[]; networkId: string }) {
@@ -132,7 +103,6 @@ export function PollPanel({
   const [credential, setCredential] = useState('');
   const [revealCredential, setRevealCredential] = useState(false);
   const [justGenerated, setJustGenerated] = useState(false);
-  const elapsed = useElapsedSeconds(isCalling);
   const { ref: panelRef, inView: panelInView } = useInView<HTMLElement>();
   const credentialTooShort = credential.length > 0 && credential.length < MIN_CREDENTIAL_LENGTH;
 
@@ -304,37 +274,13 @@ export function PollPanel({
           </p>
         )}
 
-        <div className="vote-buttons">
-          <button
-            className="btn btn-vote btn-vote-yes"
-            type="button"
-            disabled={isCalling || credential.length < MIN_CREDENTIAL_LENGTH}
-            onClick={() => submit('yes')}
-          >
-            {isCalling && lastVoteKind === 'yes' && <span className="spinner" />}
-            VOTE YES
-          </button>
-          <button
-            className="btn btn-vote btn-vote-no"
-            type="button"
-            disabled={isCalling || credential.length < MIN_CREDENTIAL_LENGTH}
-            onClick={() => submit('no')}
-          >
-            {isCalling && lastVoteKind === 'no' && <span className="spinner" />}
-            VOTE NO
-          </button>
-        </div>
-
-        {isCalling && (
-          <div className="proving-status-box" style={{ marginTop: '0.75rem', textAlign: 'center' }}>
-            <p className="hint proving-hint" role="status" aria-live="polite">
-              Generating zero-knowledge proof… {elapsed.toFixed(1)}s
-            </p>
-            <span className="privacy-badge" style={{ display: 'inline-block', marginTop: '0.25rem', fontSize: '0.8rem', padding: '0.25rem 0.6rem', background: 'rgba(52, 211, 153, 0.15)', color: '#34d399', borderRadius: '4px' }}>
-              Proved without revealing your input
-            </span>
-          </div>
-        )}
+        <CircuitCall
+          isCalling={isCalling}
+          disabled={credential.length < MIN_CREDENTIAL_LENGTH}
+          lastVoteKind={lastVoteKind}
+          onVoteYes={() => submit('yes')}
+          onVoteNo={() => submit('no')}
+        />
       </form>
 
       {callError && (
