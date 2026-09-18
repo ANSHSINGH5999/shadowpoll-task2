@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../../",
+  "sources": ["contracts/shadowpoll.compact", "compiler/standard-library.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EA0CA;;;;;;;;;;;;;MAMA,AAAA,OAOC;;;;;;;;;;;;;;;;;;;;;;OAAA;MAED,AAAA,MAOC;;;;;;;;;;;;;;;;;;;;;;OAAA;;;;;;;;;;GApBA;EAFD;;;;;UAAY,IAAa;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAZzB;;;;;;;;;yEAAgC;IAChC;;;;;;;;;yEAAgC;IAChC;;;;;;;;;yEAA+B;IAC/B;;;;;;;;;yEAAsC;IACtC;;;;;;;;;;yEAAyC;IASvC;;;;;;;2HAAkB,IAAE;;yEAAd;;;;;;;GACP;EC5CD,AAAA,kBAAA;oEAAA;;;ED2BA,AAAA,mBAAsC;;0DAAtC,gBAAsC;;;;;;;;;;;;;;GAAA;EAqBtC,AAAA,UAOC;UANO,YAA+B;UAC/B,WAAgF,2BAArB,YAAU;wEAAE;;;;;;;;;;;6IAAM;qDAC3E;;;;;;;;;;;4KAAkB,WAAS;;;;0HAAjB;;IAClB;;;;;;;;;;2HAAkB,WAAS;;;;;wEAAjB;UACV,KAAc;IAAd;;;;;;;;;;6FAAA,KAAc;;;;wEAAA;UACd,KAAQ;IAAR;;;;;;;;;;6FAAA,KAAQ;;;;wEAAA;;GACT;EAED,AAAA,SAOC;UANO,YAA+B;UAC/B,WAAgF,2BAArB,YAAU;wEAAE;;;;;;;;;;;6IAAM;qDAC3E;;;;;;;;;;;4KAAkB,WAAS;;;;0HAAjB;;IAClB;;;;;;;;;;2HAAkB,WAAS;;;;;wEAAjB;UACV,KAAc;IAAd;;;;;;;;;;6FAAA,KAAc;;;;wEAAA;UACd,KAAO;IAAP;;;;;;;;;;6FAAA,KAAO;;;;wEAAA;;GACR;;;;;;;;;;;;;;;;IAlCD;qCAAA;;;;;;;;;;;0GAAgC;KAAA;IAChC;qCAAA;;;;;;;;;;;0GAAgC;KAAA;IAChC;qCAAA;;;;;;;;;;;0GAA+B;KAAA;IAC/B;qCAAA;;;;;;;;;;;0GAAsC;KAAA;IACtC;;;;;uCAAA;;;;;;;;;;;;;;;;4GAAyC;;;;;;uCAAzC;;;;;;;;;;;;4GAAyC;;;;;;;;;;;;;;uCAAzC;;;;;;;;;;;;;;;4GAAyC;;;;;;;;;KAAA;;;;;;;;;;;;"
+}

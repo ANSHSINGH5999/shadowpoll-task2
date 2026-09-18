@@ -1,0 +1,65 @@
+// SPDX-License-Identifier: Apache-2.0
+//
+// ShadowPoll — a privacy-preserving Yes/No voting circuit.
+//
+// Anyone can cast a vote by proving knowledge of a private voting
+// credential. The credential itself is a `witness` — supplied locally by
+// the caller's own code / wallet-held private state — and is never written
+// to the ledger. Only a nullifier (a one-way hash of the credential) is
+// ever disclosed on-chain, so an observer can see that "someone who knew a
+// credential voted" and that "this credential has not voted twice,"
+// without ever learning who the voter is or which credential they hold.
+//
+// The nullifier is domain-separated by `pollId`, a random value fixed once
+// at deployment (see the constructor below). Without this, the same
+// credential reused across two different deployed ShadowPoll instances
+// would produce byte-identical nullifiers, letting an observer link a
+// voter's participation across separate polls. Mixing in a per-deployment
+// pollId means the same credential produces an unrelated nullifier in every
+// poll it's used in — see SECURITY_AUDIT.md, finding 2.
+
+pragma language_version >= 0.20;
+
+import CompactStandardLibrary;
+
+// ----- Private witness ---------------------------------------------------
+// Supplied by the caller's private-state provider at proof time. The raw
+// value never appears in a transaction, in the ledger, or in the UI.
+witness votingCredential(): Bytes<32>;
+
+// ----- Public (on-chain) state -----------------------------------------
+export ledger pollId: Bytes<32>;
+export ledger yesVotes: Counter;
+export ledger noVotes: Counter;
+export ledger nullifierCount: Counter;
+export ledger nullifiers: Set<Bytes<32>>;
+
+// Fixes this deployment's nullifier domain once, at deploy time. `id`
+// should be generated with a cryptographically secure random source by
+// the deployer (see PollAPI.deploy in src/lib/poll-api.ts) — it is public
+// (every voter's circuit reads it from the ledger), but it is not secret:
+// its only job is to make this poll's nullifiers unrelated to any other
+// poll's, not to hide anything.
+constructor(id: Bytes<32>) {
+  pollId = disclose(id);
+}
+
+// ----- Circuits ------------------------------------------------------------
+
+export circuit voteYes(): [] {
+  const credential = votingCredential();
+  const nullifier = disclose(persistentHash<Vector<2, Bytes<32>>>([credential, pollId]));
+  assert(!nullifiers.member(nullifier), "This credential has already voted");
+  nullifiers.insert(nullifier);
+  nullifierCount.increment(1);
+  yesVotes.increment(1);
+}
+
+export circuit voteNo(): [] {
+  const credential = votingCredential();
+  const nullifier = disclose(persistentHash<Vector<2, Bytes<32>>>([credential, pollId]));
+  assert(!nullifiers.member(nullifier), "This credential has already voted");
+  nullifiers.insert(nullifier);
+  nullifierCount.increment(1);
+  noVotes.increment(1);
+}

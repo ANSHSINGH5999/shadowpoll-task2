@@ -1,0 +1,32 @@
+{
+  "name": "@shadowpoll/contract",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./shadow_poll": {
+      "types": "./dist/managed/shadow_poll/contract/index.d.ts",
+      "import": "./dist/managed/shadow_poll/contract/index.js",
+      "default": "./dist/managed/shadow_poll/contract/index.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc --project tsconfig.build.json && cp -Rf ./src/managed ./dist/managed && cp ./src/shadow_poll.compact ./dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "0.16.0",
+    "@midnight-ntwrk/midnight-js-protocol": "4.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
