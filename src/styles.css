@@ -1,37 +1,35 @@
 /* ===== Design tokens ===================================================== */
 /*
-  Palette derived from the provided swatches: white, pale blue-gray, pale
-  ice-blue, pale mint, dark navy/charcoal, vibrant lime.
-
-  Contrast note: raw lime (#AEE05C) against white measures ~1.5:1 — nowhere
-  near the 4.5:1 WCAG AA minimum for text. So lime is used ONLY as a fill
-  (buttons, dots, bars, chips) with dark navy content on top, or as bright
-  text on the dark navy section. Anywhere lime needs to read as text on a
-  light background, --lime-deep (a darker, accessible shade of the same
-  hue, ~4:1 on white) is used instead.
+  Dark-luxury system: near-black backgrounds, off-white type, a single
+  restrained accent (deep emerald — keeps the product's existing
+  "verified / success" association from the old lime, but at a
+  sophistication level that reads as premium rather than neon). Every
+  color below is a token; nothing in this file should hardcode a raw hex
+  or rgba outside this block — that's what let this whole retheme happen
+  by editing one place instead of hunting through every component.
 */
 :root {
-  --bg-0: #ffffff;
-  --bg-1: #fafbfc;
-  --bg-2: #eef2f6;
-  --ice: #eaf2f8;
-  --mint: #ecf8f1;
+  --bg-0: #0b0b0c;
+  --bg-1: #050505;
+  --bg-2: #131315;
+  --ice: rgba(15, 107, 88, 0.16);
+  --mint: rgba(201, 206, 214, 0.06);
 
-  --navy: #2b3242;
-  --navy-deep: #1b202b;
-  --lime: #aee05c;
-  --lime-deep: #5f8a2c;
-  --lime-soft: rgba(174, 224, 92, 0.22);
+  --navy: #f5f5f0;
+  --navy-deep: #07100d;
+  --lime: #1a9c80;
+  --lime-deep: #4fd6b5;
+  --lime-soft: rgba(26, 156, 128, 0.16);
 
   --foreground: var(--navy);
-  --muted: #5b6472;
-  --faint: #8892a0;
+  --muted: #a6a6a0;
+  --faint: #6f6f6a;
 
-  --border: #dbe2ea;
-  --border-strong: #c3ccd9;
-  --surface: #ffffff;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --surface: rgba(255, 255, 255, 0.035);
 
-  --danger: #dc2626;
+  --danger: #e5484d;
   --success: var(--lime-deep);
 
   --radius-sm: 8px;
@@ -119,11 +117,11 @@ code {
   background: var(--bg-2);
 }
 .section-dark {
-  background: var(--navy);
-  color: var(--bg-0);
+  background: radial-gradient(60% 80% at 50% 20%, var(--ice) 0%, var(--bg-1) 72%);
+  color: var(--navy);
 }
 .section-dark .section-kicker {
-  color: var(--lime);
+  color: var(--lime-deep);
 }
 
 /* ===== Custom cursor ======================================================= */
@@ -314,8 +312,8 @@ code {
   z-index: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(to right, rgba(43, 50, 66, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(43, 50, 66, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(60% 60% at 50% 40%, black 0%, transparent 90%);
 }
@@ -430,7 +428,7 @@ code {
   position: absolute;
   inset: 0;
   opacity: 0;
-  mix-blend-mode: multiply;
+  mix-blend-mode: screen;
 }
 
 .hero-title:hover::before,
@@ -577,11 +575,11 @@ code {
 .btn-primary {
   background: var(--lime);
   color: var(--navy-deep);
-  box-shadow: 0 8px 24px -10px rgba(95, 138, 44, 0.45);
+  box-shadow: 0 8px 24px -10px rgba(79, 214, 181, 0.35);
 }
 
 .btn-primary:hover:not(:disabled) {
-  box-shadow: 0 12px 30px -8px rgba(95, 138, 44, 0.6);
+  box-shadow: 0 12px 30px -8px rgba(79, 214, 181, 0.5);
 }
 
 .btn-secondary {
@@ -615,7 +613,7 @@ code {
 .magnetic-btn-glow {
   position: absolute;
   inset: -40%;
-  background: radial-gradient(circle, rgba(27, 32, 43, 0.18), transparent 60%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 60%);
   opacity: 0;
   transition: opacity 0.4s;
   pointer-events: none;
@@ -695,7 +693,7 @@ code {
   inset: 0;
   border-radius: 50%;
   background: var(--navy);
-  box-shadow: 0 0 0 6px rgba(43, 50, 66, 0.08);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.06);
 }
 
 .architecture-node-index {
@@ -778,10 +776,11 @@ code {
 .panel,
 .glass-panel {
   position: relative;
-  background: var(--bg-0);
+  background: var(--surface);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 20px 40px -28px rgba(43, 50, 66, 0.16);
+  box-shadow: 0 20px 40px -28px rgba(0, 0, 0, 0.55);
 }
 
 .glass-card {
@@ -802,7 +801,7 @@ code {
 
 .spotlight-card:hover {
   border-color: var(--border-strong);
-  box-shadow: 0 28px 54px -26px rgba(43, 50, 66, 0.24);
+  box-shadow: 0 28px 54px -26px rgba(0, 0, 0, 0.65);
 }
 
 .spotlight-card-glow {
@@ -1200,7 +1199,7 @@ code {
   font-size: 11px;
   color: var(--lime-deep);
   background: var(--lime-soft);
-  border: 1px solid rgba(95, 138, 44, 0.25);
+  border: 1px solid rgba(79, 214, 181, 0.25);
   border-radius: 999px;
   padding: 4px 10px;
   width: fit-content;
@@ -1251,7 +1250,7 @@ code {
 }
 
 button.btn-primary .spinner {
-  border-color: rgba(27, 32, 43, 0.25);
+  border-color: rgba(7, 16, 13, 0.25);
   border-top-color: var(--navy-deep);
 }
 
@@ -1373,7 +1372,7 @@ button.btn-primary .spinner {
 
 .tx-state-proving {
   color: var(--lime-deep);
-  border-color: rgba(95, 138, 44, 0.3);
+  border-color: rgba(79, 214, 181, 0.3);
   background: var(--lime-soft);
 }
 
@@ -1385,7 +1384,7 @@ button.btn-primary .spinner {
 
 .tx-state-error {
   color: var(--danger);
-  border-color: rgba(220, 38, 38, 0.3);
+  border-color: rgba(229, 72, 77, 0.3);
 }
 
 /* ===== Feature grid ========================================================= */
@@ -1403,7 +1402,8 @@ button.btn-primary .spinner {
 }
 
 .feature-card {
-  background: var(--bg-0);
+  background: var(--surface);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 26px;
@@ -1588,11 +1588,11 @@ button.btn-primary .spinner {
   font-size: clamp(28px, 5vw, 48px);
   letter-spacing: -0.01em;
   line-height: 1.15;
-  color: var(--bg-0);
+  color: var(--navy);
 }
 
 .cinematic-cta p {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--muted);
   font-size: 15px;
 }
 

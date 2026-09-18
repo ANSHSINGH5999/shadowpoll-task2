@@ -75,18 +75,7 @@ export function CircuitCall({ isCalling, disabled, lastVoteKind, onVoteYes, onVo
           <p className="hint proving-hint" role="status" aria-live="polite">
             Generating zero-knowledge proof… {elapsed.toFixed(1)}s
           </p>
-          <span
-            className="privacy-badge"
-            style={{
-              display: 'inline-block',
-              marginTop: '0.25rem',
-              fontSize: '0.8rem',
-              padding: '0.25rem 0.6rem',
-              background: 'rgba(52, 211, 153, 0.15)',
-              color: '#34d399',
-              borderRadius: '4px',
-            }}
-          >
+          <span className="privacy-badge" style={{ display: 'inline-block', marginTop: '0.25rem' }}>
             Proved without revealing your input
           </span>
         </div>

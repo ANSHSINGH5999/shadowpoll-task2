@@ -50,7 +50,7 @@ The proof is generated locally in the browser (or delegated to the wallet's loca
 - **Contract SDK**: `@midnight-ntwrk/midnight-js-contracts`, `@midnight-ntwrk/compact-js`
 - **Proof generation**: `@midnight-ntwrk/midnight-js-http-client-proof-provider` against the connected wallet's prover server
 - **State reads**: `@midnight-ntwrk/midnight-js-indexer-public-data-provider`, plus a raw GraphQL query direct to the public indexer for independent verification (see [`VerifyOnChain.tsx`](./src/components/VerifyOnChain.tsx)) — bypasses this app's own code entirely
-- **Styling**: hand-written CSS design system (white/navy/lime/ice/mint), no CSS framework on the main site
+- **Styling**: hand-written, token-based CSS design system — dark-luxury palette (near-black backgrounds, off-white type, a single deep-emerald accent), no CSS framework on the main site
 - **Animation**: Framer Motion for interaction-driven motion (hover/tap physics), a custom `useInView` + CSS-transition system for scroll reveals — see [Known Limitations](#known-limitations) for why those are deliberately separate
 
 ## Privacy Model
