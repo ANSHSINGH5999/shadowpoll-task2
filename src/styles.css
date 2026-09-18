@@ -1,0 +1,1697 @@
+/* ===== Design tokens ===================================================== */
+/*
+  Palette derived from the provided swatches: white, pale blue-gray, pale
+  ice-blue, pale mint, dark navy/charcoal, vibrant lime.
+
+  Contrast note: raw lime (#AEE05C) against white measures ~1.5:1 — nowhere
+  near the 4.5:1 WCAG AA minimum for text. So lime is used ONLY as a fill
+  (buttons, dots, bars, chips) with dark navy content on top, or as bright
+  text on the dark navy section. Anywhere lime needs to read as text on a
+  light background, --lime-deep (a darker, accessible shade of the same
+  hue, ~4:1 on white) is used instead.
+*/
+:root {
+  --bg-0: #ffffff;
+  --bg-1: #fafbfc;
+  --bg-2: #eef2f6;
+  --ice: #eaf2f8;
+  --mint: #ecf8f1;
+
+  --navy: #2b3242;
+  --navy-deep: #1b202b;
+  --lime: #aee05c;
+  --lime-deep: #5f8a2c;
+  --lime-soft: rgba(174, 224, 92, 0.22);
+
+  --foreground: var(--navy);
+  --muted: #5b6472;
+  --faint: #8892a0;
+
+  --border: #dbe2ea;
+  --border-strong: #c3ccd9;
+  --surface: #ffffff;
+
+  --danger: #dc2626;
+  --success: var(--lime-deep);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+
+  --space-section: clamp(88px, 12vw, 180px);
+
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ===== Reset & base ======================================================= */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-1);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+code {
+  font-family: var(--font-mono);
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+}
+
+.section-kicker {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--lime-deep);
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+/* Reusable section-background tints — each drawn from a different swatch,
+   used to give the page depth/rhythm without ever relying on color alone
+   to carry meaning. */
+.section-tint-ice {
+  background: var(--ice);
+}
+.section-tint-mint {
+  background: var(--mint);
+}
+.section-tint-slate {
+  background: var(--bg-2);
+}
+.section-dark {
+  background: var(--navy);
+  color: var(--bg-0);
+}
+.section-dark .section-kicker {
+  color: var(--lime);
+}
+
+/* ===== Custom cursor ======================================================= */
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+  a,
+  button,
+  input {
+    cursor: none;
+  }
+}
+
+.custom-cursor-dot,
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 200;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s, width 0.25s, height 0.25s, background 0.25s, border-color 0.25s;
+}
+
+.custom-cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: var(--navy);
+}
+
+.custom-cursor-ring {
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border: 1.5px solid var(--lime-deep);
+}
+
+.custom-cursor-dot.is-active,
+.custom-cursor-ring.is-active {
+  opacity: 1;
+}
+
+.custom-cursor-ring.is-interactive {
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  border-color: var(--navy);
+  background: var(--lime-soft);
+}
+
+/* ===== Ambient background ================================================ */
+.ambient-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  background: var(--bg-1);
+}
+
+.ambient-glow {
+  position: absolute;
+  width: 55vw;
+  height: 55vw;
+  border-radius: 50%;
+  filter: blur(110px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.ambient-glow-a {
+  background: var(--ice);
+  top: -12%;
+  left: -8%;
+  animation: driftA 38s ease-in-out infinite;
+}
+
+.ambient-glow-b {
+  background: var(--mint);
+  bottom: -15%;
+  right: -10%;
+  animation: driftB 44s ease-in-out infinite;
+}
+
+.ambient-glow-c {
+  background: var(--lime-soft);
+  top: 42%;
+  left: 55%;
+  opacity: 0.4;
+  animation: driftC 50s ease-in-out infinite;
+}
+
+.ambient-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes driftA {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(8vw, 6vh) scale(1.1); }
+}
+@keyframes driftB {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-6vw, -8vh) scale(1.08); }
+}
+@keyframes driftC {
+  0%, 100% { transform: translate(-50%, 0) scale(1); }
+  50% { transform: translate(-50%, 4vh) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-glow { animation: none; }
+}
+
+/* ===== Preloader ========================================================== */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: var(--bg-0);
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.preloader-fade-out {
+  opacity: 0;
+}
+
+.preloader-mark {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preloader-ring {
+  position: absolute;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  border-top-color: var(--lime-deep);
+  animation: spin 1.4s linear infinite;
+}
+
+.preloader-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--navy);
+}
+
+.preloader-step {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader-ring { animation: none; }
+}
+
+/* ===== Hero =============================================================== */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg-0);
+}
+
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(43, 50, 66, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(43, 50, 66, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(60% 60% at 50% 40%, black 0%, transparent 90%);
+}
+
+.hero-glow {
+  position: absolute;
+  z-index: 0;
+  width: 46vw;
+  height: 46vw;
+  max-width: 640px;
+  max-height: 640px;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+.hero-glow-a {
+  background: var(--ice);
+  opacity: 0.8;
+  top: 6%;
+  left: 50%;
+  transform: translateX(-72%);
+  animation: driftA 30s ease-in-out infinite;
+}
+
+.hero-glow-b {
+  background: var(--mint);
+  opacity: 0.7;
+  bottom: 2%;
+  left: 50%;
+  transform: translateX(-18%);
+  animation: driftB 34s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow { animation: none; }
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(60% 50% at 50% 45%, transparent 0%, var(--bg-0) 94%);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 18px;
+  padding: 0 20px;
+  max-width: 760px;
+}
+
+/* Safe-by-default entrance: opacity:1 is the element's own resting style,
+   so if the animation never starts (e.g. a backgrounded tab suspending
+   rAF-adjacent timers), content is still visible — just without the fade. */
+.hero-anim {
+  opacity: 1;
+  animation: heroFadeUp 0.8s var(--ease-premium) forwards;
+}
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-anim {
+    animation: none;
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  background: var(--bg-0);
+}
+
+.status-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 0 3px var(--lime-soft);
+}
+
+.hero-title {
+  position: relative;
+  font-size: clamp(48px, 10vw, 108px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+  color: var(--navy);
+}
+
+.hero-title::before,
+.hero-title::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  mix-blend-mode: multiply;
+}
+
+.hero-title:hover::before,
+.hero-title:hover::after {
+  opacity: 0.75;
+  animation: glitch 0.4s steps(2, jump-none) infinite;
+}
+
+.hero-title:hover::before {
+  color: var(--lime-deep);
+  transform: translate(2px, 0);
+}
+
+.hero-title:hover::after {
+  color: var(--border-strong);
+  transform: translate(-2px, 0);
+}
+
+@keyframes glitch {
+  0% { clip-path: inset(0 0 90% 0); }
+  20% { clip-path: inset(20% 0 60% 0); }
+  40% { clip-path: inset(60% 0 10% 0); }
+  60% { clip-path: inset(10% 0 70% 0); }
+  80% { clip-path: inset(80% 0 5% 0); }
+  100% { clip-path: inset(40% 0 40% 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title:hover::before,
+  .hero-title:hover::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.hero-tagline {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.6vw, 26px);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--navy);
+}
+
+.hero-sub {
+  font-size: 15px;
+  color: var(--muted);
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.hero-scroll-hint {
+  position: absolute;
+  bottom: max(28px, env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--faint);
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(var(--faint), transparent);
+  animation: scrollLine 2s ease-in-out infinite;
+}
+
+@keyframes scrollLine {
+  0% { opacity: 0.2; transform: scaleY(0.4); transform-origin: top; }
+  50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+  100% { opacity: 0.2; transform: scaleY(0.4); transform-origin: top; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll-line { animation: none; }
+}
+
+@media (max-width: 640px) {
+  .hero-scroll-hint { display: none; }
+}
+
+/* ===== Buttons ============================================================= */
+.btn {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  padding: 14px 26px;
+  cursor: none;
+  position: relative;
+  transition: transform 0.15s var(--ease-premium), box-shadow 0.3s, border-color 0.3s, background 0.3s;
+}
+
+/* Press feedback on every button, even plain ones with no JS animation
+   (MagneticButton's own whileTap overrides this via inline style, so
+   there's no double-animation on the two CTA buttons that already have it). */
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Shine sweep on the two filled (lime) button styles — a diagonal
+   highlight that travels across on hover, clipped by overflow:hidden. */
+.btn-primary,
+.btn-vote-yes {
+  overflow: hidden;
+}
+
+.btn-primary::after,
+.btn-vote-yes::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.45) 45%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.6s var(--ease-premium);
+  pointer-events: none;
+}
+
+.btn-primary:hover::after,
+.btn-vote-yes:not(:disabled):hover::after {
+  transform: translateX(120%);
+}
+
+.btn-primary {
+  background: var(--lime);
+  color: var(--navy-deep);
+  box-shadow: 0 8px 24px -10px rgba(95, 138, 44, 0.45);
+}
+
+.btn-primary:hover:not(:disabled) {
+  box-shadow: 0 12px 30px -8px rgba(95, 138, 44, 0.6);
+}
+
+.btn-secondary {
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--navy);
+}
+
+.btn-secondary:hover {
+  border-color: var(--navy);
+  background: var(--bg-2);
+  box-shadow: 0 0 0 4px var(--bg-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary::after,
+  .btn-vote-yes::after {
+    display: none;
+  }
+}
+
+.magnetic-btn {
+  isolation: isolate;
+}
+
+.magnetic-btn-label {
+  position: relative;
+  z-index: 1;
+}
+
+.magnetic-btn-glow {
+  position: absolute;
+  inset: -40%;
+  background: radial-gradient(circle, rgba(27, 32, 43, 0.18), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.magnetic-btn:hover .magnetic-btn-glow {
+  opacity: 1;
+}
+
+/* ===== Dimensional intro ================================================== */
+.dimensional-intro {
+  padding: var(--space-section) 20px;
+  background: var(--bg-0);
+}
+
+.dimensional-stage {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dimensional-word {
+  font-size: clamp(36px, 8vw, 84px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+  line-height: 1;
+}
+
+.dimensional-word:nth-child(2) { color: var(--lime-deep); }
+.dimensional-word:nth-child(3) { color: var(--navy); text-decoration: underline; text-decoration-color: var(--lime); text-decoration-thickness: 6px; text-underline-offset: 6px; }
+.dimensional-word:nth-child(4) {
+  font-size: clamp(22px, 4.4vw, 42px);
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+/* ===== Privacy architecture =============================================== */
+.architecture {
+  padding: var(--space-section) 20px;
+  margin: 0 auto;
+}
+
+.architecture-flow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.architecture-item {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 12px;
+}
+
+.architecture-node {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.architecture-node-core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--navy);
+  box-shadow: 0 0 0 6px rgba(43, 50, 66, 0.08);
+}
+
+.architecture-node-index {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--lime);
+}
+
+.architecture-copy h3 {
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  color: var(--navy);
+}
+
+.architecture-copy p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+  max-width: 220px;
+}
+
+.architecture-path {
+  position: absolute;
+  top: 27px;
+  left: 50%;
+  width: 100%;
+  height: 1px;
+  background: var(--border-strong);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.8s var(--ease-premium);
+}
+
+.architecture-path-in {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .architecture-path {
+    transform: scaleX(1);
+    transition: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .architecture-flow {
+    flex-direction: column;
+    gap: 36px;
+  }
+  .architecture-path { display: none; }
+}
+
+/* ===== Cards (privacy cards + wallet/poll panels) ========================== */
+.privacy-cards-section {
+  padding: 0 20px var(--space-section);
+  max-width: 1180px;
+  margin: 0 auto;
+  background: var(--bg-0);
+}
+
+.privacy-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  perspective: 1000px;
+}
+
+/* Grid rows stretch children by default, but only the direct grid item
+   (the reveal wrapper) — its own child (SpotlightCard) needs telling to
+   fill that stretched height too, so cards in a row line up evenly. */
+.privacy-cards > *,
+.feature-grid > * {
+  height: 100%;
+}
+
+.glass-card,
+.panel,
+.glass-panel {
+  position: relative;
+  background: var(--bg-0);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 40px -28px rgba(43, 50, 66, 0.16);
+}
+
+.glass-card {
+  padding: 32px 26px;
+}
+
+/* ===== Spotlight card system (privacy cards, feature grid) ================
+   A radial highlight that tracks the cursor, set via CSS custom properties
+   from SpotlightCard.tsx's onMouseMove (not React state — this repaints
+   every frame the mouse moves, and a state-driven re-render at that rate
+   would violate the "no per-frame setState" performance rule). */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.spotlight-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: 0 28px 54px -26px rgba(43, 50, 66, 0.24);
+}
+
+.spotlight-card-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--spot-opacity, 0);
+  transition: opacity 0.35s ease;
+  background: radial-gradient(260px circle at var(--spot-x, 50%) var(--spot-y, 50%), var(--lime-soft), transparent 72%);
+}
+
+.spotlight-card > *:not(.spotlight-card-glow) {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-card {
+    transform: none !important;
+  }
+}
+
+.glass-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  font-size: 18px;
+  color: var(--navy);
+  background: var(--lime-soft);
+  margin-bottom: 18px;
+}
+
+.glass-card-index {
+  position: absolute;
+  top: 26px;
+  right: 26px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.glass-card h3 {
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+  color: var(--navy);
+}
+
+.glass-card p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 860px) {
+  .privacy-cards { grid-template-columns: 1fr; }
+}
+
+/* ===== Wallet / Poll panels (functional dApp UI) =========================== */
+.panel,
+.glass-panel {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel h2,
+.glass-panel h2 {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+}
+
+.live-poll-section {
+  padding: var(--space-section) 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--bg-0);
+}
+
+.live-poll-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.address {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 9px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  background: var(--faint);
+}
+
+.status-dot.connected {
+  background: var(--lime-deep);
+  box-shadow: 0 0 0 3px var(--lime-soft);
+}
+
+.status-dot.error {
+  background: var(--danger);
+}
+
+.copy-btn {
+  font-family: var(--font-body);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  cursor: none;
+  transition: transform 0.15s var(--ease-premium), color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.copy-btn:hover {
+  color: var(--navy);
+  border-color: var(--border-strong);
+  background: var(--bg-2);
+}
+
+.copy-btn:active {
+  transform: scale(0.92);
+}
+
+.wallet-address-row,
+.balance-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.funding-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--faint);
+}
+
+.funding-dot.funded {
+  background: var(--lime-deep);
+}
+
+.faucet-link {
+  font-size: 12px;
+  color: var(--lime-deep);
+  text-decoration: none;
+  margin-left: auto;
+}
+
+.faucet-link:hover {
+  text-decoration: underline;
+}
+
+.balance-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dust-bar {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  overflow: hidden;
+}
+
+.dust-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--lime);
+}
+
+.verify-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.verify-result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.verify-raw {
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.field input {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  background: var(--bg-0);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: var(--navy);
+  cursor: auto;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--navy);
+}
+
+.credential-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.credential-input-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ===== Vote confirmation card ==============================================
+   A permanent, in-flow record of the latest vote — NOT a modal. It sits at
+   the top of the Live Poll section, has no close control, and never
+   disappears on its own; the next vote just replaces its contents. */
+.confirmation-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 28px;
+  margin-bottom: 20px;
+  text-align: left;
+  animation: cardIn 0.4s var(--ease-bounce);
+}
+
+.confirmation-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.confirmation-body h3 {
+  font-size: 18px;
+  color: var(--navy);
+}
+
+.confirmation-body .modal-stats {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.confirmation-body .modal-tx-row {
+  align-items: flex-start;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: scale(0.97) translateY(-6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .confirmation-card {
+    animation: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .confirmation-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .confirmation-body {
+    align-items: center;
+  }
+  .confirmation-body .modal-stats,
+  .confirmation-body .modal-tx-row {
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.modal-check {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy-deep);
+  background: var(--lime);
+  box-shadow: 0 0 0 8px var(--lime-soft);
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.modal-stats {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-tx-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--faint);
+  line-height: 1.5;
+}
+
+.error-text {
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.result {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tx-hash {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+  word-break: break-all;
+}
+
+.privacy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--lime-deep);
+  background: var(--lime-soft);
+  border: 1px solid rgba(95, 138, 44, 0.25);
+  border-radius: 999px;
+  padding: 4px 10px;
+  width: fit-content;
+}
+
+.history-badge.no {
+  color: var(--navy);
+  background: var(--bg-2);
+  border-color: var(--border-strong);
+}
+
+.stat-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+}
+
+.stat .value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.spinner {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--navy);
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: -2px;
+}
+
+button.btn-primary .spinner {
+  border-color: rgba(27, 32, 43, 0.25);
+  border-top-color: var(--navy-deep);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.history {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+
+.history-round {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.history-hash {
+  color: var(--faint);
+  flex: 1;
+  min-width: 0;
+}
+
+/* ===== Poll-specific ======================================================= */
+.poll-panel {
+  gap: 18px;
+}
+
+.poll-question {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--navy);
+  line-height: 1.4;
+}
+
+.poll-stats .value {
+  color: var(--navy);
+}
+
+.tally-bar {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--bg-2);
+  overflow: hidden;
+}
+
+.tally-bar-yes {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--lime);
+  transition: width 0.6s var(--ease-premium);
+}
+
+.vote-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.btn-vote {
+  flex: 1;
+  padding: 13px 18px;
+}
+
+.btn-vote-yes {
+  background: var(--lime);
+  color: var(--navy-deep);
+}
+
+.btn-vote-no {
+  background: transparent;
+  border-color: var(--border-strong);
+  color: var(--navy);
+}
+
+.btn-vote-no:not(:disabled):hover {
+  border-color: var(--navy);
+  background: var(--bg-2);
+  box-shadow: 0 0 0 4px var(--bg-2);
+}
+
+.proving-hint {
+  margin-top: 4px;
+}
+
+.tx-state {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  border-radius: 999px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  color: var(--faint);
+}
+
+.tx-state-proving {
+  color: var(--lime-deep);
+  border-color: rgba(95, 138, 44, 0.3);
+  background: var(--lime-soft);
+}
+
+.tx-state-confirmed {
+  color: var(--navy);
+  border-color: var(--border-strong);
+  background: var(--bg-2);
+}
+
+.tx-state-error {
+  color: var(--danger);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+/* ===== Feature grid ========================================================= */
+.feature-section {
+  padding: var(--space-section) 20px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  perspective: 1200px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: var(--bg-0);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 26px;
+}
+
+/* Tilt itself comes from SpotlightCard's inline rotateX/rotateY (a Framer
+   Motion spring, already smooth) — border/shadow hover state comes from
+   the shared .spotlight-card:hover rule above. */
+
+.feature-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  font-size: 17px;
+  color: var(--navy);
+  background: var(--lime-soft);
+  margin-bottom: 16px;
+  transition: transform 0.4s var(--ease-premium);
+}
+
+.feature-card:hover .feature-card-icon {
+  transform: rotate(14deg) scale(1.12);
+}
+
+.feature-card h3 {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--navy);
+  transition: transform 0.4s var(--ease-premium);
+}
+
+.feature-card:hover h3 {
+  transform: translateY(-3px);
+}
+
+.feature-card p {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (max-width: 860px) {
+  .feature-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .feature-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== Process visualization ================================================ */
+.process-section {
+  position: relative;
+  padding: var(--space-section) 20px;
+  overflow: hidden;
+}
+
+.process-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.process-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--lime-deep);
+  opacity: 0.35;
+  animation: particleDrift 20s ease-in-out infinite;
+}
+
+@keyframes particleDrift {
+  0%, 100% { transform: translate(0, 0); opacity: 0.15; }
+  50% { transform: translate(18px, -24px); opacity: 0.5; }
+}
+
+.process-flow {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.process-stage {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 0 8px;
+}
+
+.process-node {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  box-shadow: 0 0 0 4px var(--bg-0);
+}
+
+.process-node-public {
+  width: 20px;
+  height: 20px;
+  background: var(--navy);
+  box-shadow: 0 0 0 6px var(--lime-soft);
+}
+
+.process-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.process-node-public + .process-label {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.process-tag {
+  font-size: 10px;
+  color: var(--lime-deep);
+  letter-spacing: 0.06em;
+}
+
+.process-path {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 100%;
+  height: 1px;
+  background: var(--border-strong);
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.6s var(--ease-premium);
+}
+
+.process-path-in {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .process-path {
+    transform: scaleX(1);
+    transition: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .process-flow { flex-direction: column; gap: 28px; }
+  .process-path { display: none; }
+}
+
+/* ===== Cinematic CTA (the one deliberately dark section — navy bg, lime
+   button — ties the whole palette together at the close of the page) ===== */
+.cinematic-cta {
+  padding: var(--space-section) 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.cinematic-cta-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.cinematic-cta h2 {
+  font-size: clamp(28px, 5vw, 48px);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--bg-0);
+}
+
+.cinematic-cta p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+}
+
+/* ===== Footer =============================================================== */
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 40px 20px calc(40px + env(safe-area-inset-bottom, 0px));
+  font-size: 12px;
+  color: var(--faint);
+  background: var(--bg-0);
+}
+
+.site-footer a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  color: var(--lime-deep);
+}
+
+.site-footer-sep {
+  opacity: 0.5;
+}
+
+/* ===== Responsive ============================================================ */
+@media (max-width: 480px) {
+  .panel,
+  .glass-panel {
+    padding: 18px;
+  }
+  .vote-buttons {
+    flex-direction: column;
+  }
+  .stat-row {
+    gap: 16px;
+  }
+}
+
+/* Custom cursor only makes sense with a real mouse — restore the default
+   cursor everywhere on coarse/touch pointers. */
+@media (pointer: coarse) {
+  body,
+  a,
+  button,
+  input,
+  .btn,
+  .copy-btn {
+    cursor: auto;
+  }
+}
+
+/* ===== Motion accessibility =================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+  .feature-card {
+    transition: none;
+  }
+  .process-particle {
+    animation: none;
+  }
+}
+
+/* Generic scroll-reveal: starts hidden only once JS confirms it's
+   controllable (`.reveal-ready`), and transitions to `.reveal-in` on cue
+   from useInView. No JS/no observer support at all = never applied =
+   content stays at its normal visible layout, never stuck invisible. */
+.reveal-ready {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s var(--ease-premium), transform 0.7s var(--ease-premium);
+}
+
+.reveal-scale.reveal-ready {
+  transform: scale(0.88);
+}
+
+.reveal-scale.reveal-in {
+  transform: scale(1);
+  transition-timing-function: var(--ease-bounce);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-in {
+    transition: none;
+  }
+}
