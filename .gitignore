@@ -36,7 +36,6 @@ public/zk/
 *.sln
 *.sw?
 .vercel
-.env*
 
 # Original local recording exceeds GitHub's per-file size limit.
 export-*.mp4
