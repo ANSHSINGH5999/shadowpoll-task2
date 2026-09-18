@@ -1,5 +1,8 @@
 
 # ShadowPoll
+
+![CI](https://github.com/ANSHSINGH5999/shadowpoll-task2/actions/workflows/ci.yml/badge.svg)
+
 Video Link https://youtu.be/MYlBsBfwbXg
 Privacy-Preserving Yes/No Voting on Midnight
 
