@@ -52,6 +52,7 @@ The proof is generated locally in the browser (or delegated to the wallet's loca
 - **State reads**: `@midnight-ntwrk/midnight-js-indexer-public-data-provider`, plus a raw GraphQL query direct to the public indexer for independent verification (see [`VerifyOnChain.tsx`](./src/components/VerifyOnChain.tsx)) — bypasses this app's own code entirely
 - **Styling**: hand-written, token-based CSS design system — dark-luxury palette (near-black backgrounds, off-white type, a single deep-emerald accent), no CSS framework on the main site
 - **Animation**: Framer Motion for interaction-driven motion (hover/tap physics), a custom `useInView` + CSS-transition system for scroll reveals — see [Known Limitations](#known-limitations) for why those are deliberately separate
+- **3D**: a hand-built `three` scene ([`src/components/3d/PrivacyCore.tsx`](./src/components/3d/PrivacyCore.tsx)) — a faceted glass "core" orbited by three luminous nodes, visualizing the private-credential / public-nullifier story the page tells in text. Code-split behind `React.lazy` (only downloads on desktop viewports with no `prefers-reduced-motion`), pauses its render loop via `IntersectionObserver` when scrolled out of view or the tab is backgrounded, and disposes every GPU resource on unmount
 
 ## Privacy Model
 

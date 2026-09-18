@@ -1,5 +1,13 @@
+import { lazy, Suspense } from 'react';
 import { MagneticButton } from './MagneticButton';
 import type { WalletStatus } from '../hooks/useMidnight';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+import { useIsDesktopViewport } from '../hooks/useIsDesktopViewport';
+
+// Code-split: three.js only downloads for visitors who'll actually see it
+// animate (desktop, motion allowed) — everyone else gets the existing CSS
+// ambient glow with zero extra bytes.
+const PrivacyCore = lazy(() => import('./3d/PrivacyCore').then((m) => ({ default: m.PrivacyCore })));
 
 type HeroProps = {
   networkId: string;
@@ -19,12 +27,20 @@ type HeroProps = {
 export function Hero({ networkId, walletStatus, onConnect, onExplore }: HeroProps) {
   const isConnected = walletStatus === 'connected';
   const isConnecting = walletStatus === 'connecting';
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const isDesktop = useIsDesktopViewport();
+  const show3D = isDesktop && !prefersReducedMotion;
 
   return (
     <section className="hero" id="hero">
       <div className="hero-grid" aria-hidden="true" />
       <div className="hero-glow hero-glow-a" aria-hidden="true" />
       <div className="hero-glow hero-glow-b" aria-hidden="true" />
+      {show3D && (
+        <Suspense fallback={null}>
+          <PrivacyCore />
+        </Suspense>
+      )}
       <div className="hero-vignette" aria-hidden="true" />
 
       <div className="hero-content">
