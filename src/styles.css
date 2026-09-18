@@ -12,14 +12,14 @@
   --bg-0: #0b0b0c;
   --bg-1: #050505;
   --bg-2: #131315;
-  --ice: rgba(15, 107, 88, 0.16);
-  --mint: rgba(201, 206, 214, 0.06);
+  --ice: rgba(15, 107, 88, 0.32);
+  --mint: rgba(79, 214, 181, 0.1);
 
   --navy: #f5f5f0;
   --navy-deep: #07100d;
   --lime: #1a9c80;
   --lime-deep: #4fd6b5;
-  --lime-soft: rgba(26, 156, 128, 0.16);
+  --lime-soft: rgba(26, 156, 128, 0.24);
 
   --foreground: var(--navy);
   --muted: #a6a6a0;
@@ -439,6 +439,11 @@ code {
   letter-spacing: -0.02em;
   line-height: 0.95;
   color: var(--navy);
+  background: linear-gradient(180deg, var(--navy) 35%, var(--lime-deep) 165%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 60px rgba(79, 214, 181, 0.25));
 }
 
 .hero-title::before,
@@ -815,12 +820,13 @@ code {
   position: relative;
   overflow: hidden;
   height: 100%;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.4s var(--ease-premium);
 }
 
 .spotlight-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: 0 28px 54px -26px rgba(0, 0, 0, 0.65);
+  border-color: var(--lime-deep);
+  box-shadow: 0 28px 54px -26px rgba(0, 0, 0, 0.65), 0 0 40px -12px rgba(79, 214, 181, 0.35);
+  transform: translateY(-4px);
 }
 
 .spotlight-card-glow {
