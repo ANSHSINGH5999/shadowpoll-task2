@@ -1,0 +1,61 @@
+{
+  "name": "shadowpoll",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "contract",
+    "cli"
+  ],
+  "scripts": {
+    "predev": "node scripts/copy-zk-assets.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/copy-zk-assets.mjs",
+    "build": "tsc -b tsconfig.app.json && vite build",
+    "preview": "vite preview",
+    "test": "node --test tests/shadowpoll.test.ts",
+    "compact:compile": "compact compile contracts/shadowpoll.compact managed/shadowpoll",
+    "postinstall": "node scripts/copy-zk-assets.mjs"
+  },
+  "overrides": {
+    "@midnight-ntwrk/ledger-v8": "8.1.0",
+    "@midnight-ntwrk/onchain-runtime-v3": "3.0.0"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-js": "2.5.1",
+    "@midnight-ntwrk/compact-runtime": "0.16.0",
+    "@midnight-ntwrk/dapp-connector-api": "4.0.1",
+    "@midnight-ntwrk/ledger-v8": "8.1.0",
+    "@midnight-ntwrk/midnight-js-contracts": "4.1.1",
+    "@midnight-ntwrk/midnight-js-fetch-zk-config-provider": "4.1.1",
+    "@midnight-ntwrk/midnight-js-http-client-proof-provider": "4.1.1",
+    "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "4.1.1",
+    "@midnight-ntwrk/midnight-js-network-id": "4.1.1",
+    "@midnight-ntwrk/midnight-js-protocol": "4.1.1",
+    "@midnight-ntwrk/midnight-js-types": "4.1.1",
+    "@midnight-ntwrk/midnight-js-utils": "4.1.1",
+    "@midnight-ntwrk/onchain-runtime-v3": "3.0.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "buffer": "^6.0.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "effect": "^3.20.0",
+    "framer-motion": "^13.3.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "semver": "^7.7.4",
+    "tailwind-merge": "^3.7.0",
+    "tailwindcss": "^4.3.3",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@types/semver": "^7.5.8",
+    "@vitejs/plugin-react": "^5.2.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.14",
+    "vite-plugin-wasm": "^3.5.0"
+  }
+}

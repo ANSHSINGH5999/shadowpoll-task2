@@ -1,0 +1,42 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+.vite
+
+# Compiled ZK assets copied from managed/ for local dev/build (see
+# scripts/copy-zk-assets.mjs) — regenerated on install, not source.
+public/zk/
+
+# Local env files (may contain a contract address you don't want to share
+# before it's ready, or a non-default network id)
+.env
+.env.local
+
+# Local Claude Code settings
+.claude/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vercel
+.env*
+
+# Original local recording exceeds GitHub's per-file size limit.
+export-*.mp4
