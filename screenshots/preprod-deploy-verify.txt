@@ -1,0 +1,20 @@
+# Midnight Preprod — independent verification of the ShadowPoll deployment
+# Queried 2026-09-25T08:54:41Z against the public Preprod indexer (no app code involved)
+
+$ curl -s https://indexer.preprod.midnight.network/api/v4/graphql \
+    -H 'content-type: application/json' \
+    -d '{"query":"{ contractAction(address: \"d96f15b971d60aa20ce22533e54072871f66a23b6819b0961203437f1a3abf3a\") { __typename address transaction { hash block { height } } } }"}'
+{
+    "data": {
+        "contractAction": {
+            "__typename": "ContractDeploy",
+            "address": "d96f15b971d60aa20ce22533e54072871f66a23b6819b0961203437f1a3abf3a",
+            "transaction": {
+                "hash": "9a2d541f08d764fb9ccdfdaab8946422dd6a8a568e0ae9d0f8f4b24160ae44fd",
+                "block": {
+                    "height": 2601023
+                }
+            }
+        }
+    }
+}

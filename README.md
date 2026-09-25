@@ -3,9 +3,26 @@
 
 ![CI](https://github.com/ANSHSINGH5999/shadowpoll-task2/actions/workflows/ci.yml/badge.svg)
 
-Video Link https://youtu.be/MYlBsBfwbXg
-Privacy-Preserving Yes/No Voting on Midnight
+Privacy-preserving Yes/No voting on Midnight.
 
+**Demo video:** https://youtu.be/MYlBsBfwbXg
+
+## Contract Address
+
+| Network | Contract Address | Deploy Tx | Block | Status |
+| --- | --- | --- | --- | --- |
+| **Midnight Preprod** (`preprod`) | `d96f15b971d60aa20ce22533e54072871f66a23b6819b0961203437f1a3abf3a` | `9a2d541f08d764fb9ccdfdaab8946422dd6a8a568e0ae9d0f8f4b24160ae44fd` | `2601023` | Deployed & Active |
+
+Verify it on the public Preprod indexer (this doesn't use any of this app's code):
+
+```bash
+curl -s https://indexer.preprod.midnight.network/api/v4/graphql \
+  -H 'content-type: application/json' \
+  -d '{"query":"{ contractAction(address: \"d96f15b971d60aa20ce22533e54072871f66a23b6819b0961203437f1a3abf3a\") { __typename address transaction { hash block { height } } } }"}'
+# → {"data":{"contractAction":{"__typename":"ContractDeploy","address":"d96f15b9…","transaction":{"hash":"9a2d541f…","block":{"height":2601023}}}}}
+```
+
+Product proposal (product and users, why Midnight, data model, Mainnet feasibility by Level 6): [PROPOSAL.md](./PROPOSAL.md).
 
 
 ## Live Demo
@@ -111,8 +128,8 @@ Runs [`tests/shadowpoll.test.ts`](./tests/shadowpoll.test.ts) against `@midnight
 ## Local Development
 
 ```bash
-git clone <this-repo-url>
-cd <this-repo>
+git clone https://github.com/ANSHSINGH5999/shadowpoll-task2.git
+cd shadowpoll-task2
 npm install          # also compiles the contract's ZK assets into public/zk (postinstall)
 cp .env.example .env # fill in VITE_CONTRACT_ADDRESS once you've deployed
 npm run dev
@@ -164,9 +181,8 @@ No contract address is hardcoded anywhere in source — see [`src/hooks/useMidni
 
 ## Demo
 
-<video controls width="100%" src="./public/shadowpoll-demo.mp4">
-  <a href="./public/shadowpoll-demo.mp4">Watch the ShadowPoll demo video</a>
-</video>
+- Video walkthrough: https://youtu.be/MYlBsBfwbXg (also in the repo as [`public/shadowpoll-demo.mp4`](./public/shadowpoll-demo.mp4))
+- Terminal evidence in [`screenshots/`](./screenshots): test run (12/12), contract compile output, and the Preprod indexer verification of the deployed address
 
 ## Security Notes
 
@@ -191,6 +207,7 @@ No contract address is hardcoded anywhere in source — see [`src/hooks/useMidni
 - Richer governance primitives (multi-option questions, weighted voting, delegation)
 - Independent audit tooling beyond the existing indexer cross-check
 - Persistent, encrypted private-state storage so a credential survives a refresh without touching plaintext disk storage
+- Mainnet deployment by Level 6. See the level-by-level plan in [PROPOSAL.md → Q4](./PROPOSAL.md#q4-scope-and-feasibility-of-mainnet-by-level-6)
 
 ## License
 

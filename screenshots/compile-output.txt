@@ -1,0 +1,16 @@
+$ compact compile contracts/shadowpoll.compact managed/shadowpoll    # compiler 0.31.1
+Compiling 2 circuits:
+
+$ find managed/shadowpoll -type f | sort
+managed/shadowpoll/compiler/contract-info.json
+managed/shadowpoll/contract/index.d.ts
+managed/shadowpoll/contract/index.js
+managed/shadowpoll/contract/index.js.map
+managed/shadowpoll/keys/voteNo.prover
+managed/shadowpoll/keys/voteNo.verifier
+managed/shadowpoll/keys/voteYes.prover
+managed/shadowpoll/keys/voteYes.verifier
+managed/shadowpoll/zkir/voteNo.bzkir
+managed/shadowpoll/zkir/voteNo.zkir
+managed/shadowpoll/zkir/voteYes.bzkir
+managed/shadowpoll/zkir/voteYes.zkir

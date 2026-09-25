@@ -22,7 +22,7 @@ public/zk/
 .env
 .env.local
 
-# Local Claude Code settings
+# Local editor/agent settings
 .claude/
 
 # Editor directories and files

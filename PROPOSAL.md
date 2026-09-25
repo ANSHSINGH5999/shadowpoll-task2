@@ -1,5 +1,56 @@
 # Product Proposal
 
+## Summary: the four questions
+
+### Q1. What is the product and who uses it?
+
+ShadowPoll is a Yes/No voting dApp. Each deployed contract is one poll. A voter proves they hold a secret credential and casts one vote. The chain never learns which credential or which wallet cast it.
+
+**Who uses it:**
+- **Poll creators**, such as DAO and community stewards, team leads running anonymous pulse checks, or student and club committees. They deploy a poll from the UI through their own Lace or 1AM wallet, or share a `?contract=<address>` link.
+- **Voters**, meaning anyone the poll creator gives the link to. Voters need a Preprod wallet with tDUST for the fee. They are people who would answer honestly only if the vote can't be tied back to them (compensation, leadership confidence, sensitive governance questions).
+- **Auditors and observers**, meaning anyone at all. They read the tally and the nullifier set straight from the public indexer to check the result without trusting the app.
+
+### Q2. Why Midnight specifically?
+
+A generic public chain can't do this job. On Ethereum, for example, every vote transaction is signed by a public address, so the vote is linked to the voter permanently. ShadowPoll relies on three Midnight primitives, all used in [`contracts/shadowpoll.compact`](./contracts/shadowpoll.compact):
+
+| Midnight primitive | How ShadowPoll uses it |
+| --- | --- |
+| **`witness`** | `witness votingCredential(): Bytes<32>` gives the circuit the voter's secret from local private state at proof time. It is never part of the transaction. |
+| **`disclose()`** | Only `disclose(persistentHash([credential, pollId]))` (the nullifier) and the constructor's `pollId` become public. The Compact compiler rejects any witness-derived value that reaches the ledger without an explicit `disclose()`. So the privacy boundary is checked by the compiler; it doesn't depend on frontend discipline. |
+| **Nullifier set in ledger state + in-circuit `assert`** | `assert(!nullifiers.member(nullifier), …)` runs inside the ZK circuit. A second vote from the same credential can't produce a valid proof, so double voting is blocked by the proof system and not by app code. |
+
+Other chains would need a separately audited ZK stack (circuits, verifier contract, relayer to hide the sender) to get close. On Midnight these are built into the language and the protocol.
+
+### Q3. Data model: public state, private witness, and what gets disclosed
+
+| Layer | Item | Type | Who can see it |
+| --- | --- | --- | --- |
+| **Public ledger state** | `pollId` | `Bytes<32>` (random, set once in the constructor) | Everyone |
+| | `yesVotes`, `noVotes` | `Counter` | Everyone |
+| | `nullifierCount` | `Counter` | Everyone |
+| | `nullifiers` | `Set<Bytes<32>>` | Everyone |
+| **Private witness** | `votingCredential` | `Bytes<32>`, the SHA-256 of the voter's secret string, held in an in-memory private-state provider | Only the voter's browser. It is never sent over the network, never persisted, never logged. |
+| **Disclosed per vote** | nullifier = `persistentHash([credential, pollId])` | `Bytes<32>` | Everyone. It is one-way and unique per poll, so it can't be linked back to the credential or across polls. |
+| | Which circuit was called (`voteYes` / `voteNo`) | Transaction metadata | Everyone. Only the direction of an anonymous vote is visible, never who cast it. |
+| **Never on-chain** | Raw credential string, credential hash, voter identity | n/a | Nobody. The test suite asserts this directly (`tests/shadowpoll.test.ts`). |
+
+### Q4. Scope and feasibility of Mainnet by Level 6
+
+The core mechanism is already implemented and deployed on Preprod: witness, then nullifier, then in-circuit double-vote check, then public tally. It's covered by 12 passing tests, and CI runs on every push. None of that has to change for Mainnet. The remaining work concerns trust and lifecycle, not cryptography. It's scoped as follows:
+
+| Level | Scope | Deliverable |
+| --- | --- | --- |
+| **Current** (done) | Single Yes/No poll per contract, self-chosen credentials, Preprod deployment, CI, security self-audit | Contract `d96f15b9…` live on Preprod, `SECURITY_AUDIT.md` |
+| **Level 4** | **Eligibility**: the poll creator commits a Merkle root of issued credential commitments at deploy time. The vote circuit adds a Merkle-membership proof of the credential (a Compact `MerkleTree` ledger type), which closes the Sybil gap in Known Limitations. | New circuit, plus tests for non-member rejection |
+| **Level 5** | **Lifecycle and UX**: open/close block-height window enforced in-circuit, multiple polls per deployment keyed by `pollId`, encrypted persistent private state so a credential survives a refresh | Lifecycle tests; external review of circuits |
+| **Level 6** | **Mainnet**: deploy the audited contract to Midnight Mainnet, set the frontend's `VITE_NETWORK_ID` to mainnet, publish a standalone verifier script that recomputes tallies from raw indexer data | Mainnet contract address + public verifier |
+
+**Feasibility:** high. The contract is 2 circuits over 5 ledger fields, and the Mainnet path adds only standard Compact features (a Merkle membership check and a block-height comparison). The main risk outside the code is operational: who issues eligibility credentials for a real poll. Level 4 handles that by leaving issuance to the poll creator, with ShadowPoll only verifying membership.
+
+---
+
 ## 1. Project Name
 
 ShadowPoll
@@ -109,4 +160,4 @@ npm run dev
 - Richer governance primitives (multi-option questions, weighted voting, delegation)
 - Independent audit tooling beyond the existing indexer cross-check (e.g. a public verifier script that recomputes tallies from raw chain data)
 - Persistent (encrypted) private-state storage so a credential survives a page refresh without weakening the "never touches disk in plaintext" guarantee
-- Mainnet feasibility: realistic once eligibility credentials and a persistent private-state story are in place — the core ZK/nullifier mechanism itself does not need to change for mainnet, but the trust model around *who issues credentials* does need to be designed before this could run a real-stakes governance vote.
+- Mainnet feasibility: see [Q4 above](#q4-scope-and-feasibility-of-mainnet-by-level-6) for the level-by-level plan.
